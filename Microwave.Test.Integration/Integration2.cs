@@ -42,12 +42,9 @@ namespace Microwave.Test.Integration
         public void StartCooking_4SecondsInputWaitSecond_OneSecondLessRemaining()
         {
             _sut.StartCooking(20,4000);
-            Thread.Sleep(1000);
+            Thread.Sleep(1100);
             _sut.Stop();
             Assert.That(_timer.TimeRemaining, Is.EqualTo(3000));
-            
-            //Assert.AreEqual(_timer.Enabled, true);
-            //Assert.AreEqual(_timer.Timer, time);
         }
 
         [Test]
@@ -65,19 +62,19 @@ namespace Microwave.Test.Integration
 
 	        Thread.Sleep(1100); //Vent til timer slut 100 ms over
 
-            _powerTube.Received(1).TurnOff();
+            _output.Received(1).OutputLine(Arg.Is<string>(str =>str.Contains("PowerTube turned off")));
 
         }
 
         [Test]
-        public void StartCookingTwoSeconds_DisplayShowTimeTwice()
+        public void StartCookingTwoSeconds_DisplayShowTime()
         {
-            _sut.StartCooking(20,2);
+            _sut.StartCooking(20,2000);
             
             Thread.Sleep(2100);
 
-            _display.Received(1).ShowTime(0,1);
-            _display.Received(1).ShowTime(0,0);
+            _output.Received(1).OutputLine(Arg.Is<string>(str => str.Contains("Display shows: 00:00")));
+
 
         }
 
