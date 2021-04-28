@@ -61,9 +61,26 @@ namespace Microwave.Test.Integration
         }
 
         [Test]
-        public void OnPowerPressed_PressPowerButtonSetPowerLevelTooHigh_DisplayShows700Power()
+        public void PowerButtonPress_PressPowerButton3Times_DisplayShows150Power()
         {
+            _powerButton.Press();
+            _powerButton.Press();
+            _powerButton.Press();
 
+            _output.Received(1)
+                .OutputLine(Arg.Is<string>(str =>
+                    str.Contains("150")));
+        }
+
+        [Test]
+        public void PowerButtonPress_PressPowerButtonTooManyTimes_DisplayShows700Power()
+        {
+            for(int i = 0; i < 20; i++)
+                _powerButton.Press();
+
+            _output.Received(1)
+                .OutputLine(Arg.Is<string>(str =>
+                    str.Contains("700")));
         }
     }
 }
