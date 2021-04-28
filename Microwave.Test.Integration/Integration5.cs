@@ -1,3 +1,5 @@
+using System;
+using System.IO;
 using Microwave.Classes.Boundary;
 using Microwave.Classes.Controllers;
 using Microwave.Classes.Interfaces;
@@ -23,8 +25,8 @@ namespace Microwave.Test.Integration
         private IOutput _output;
         private ILight _light;
         private IDoor _door;
-
-        private CookController _sut;    
+       
+        private CookController _cookController;    
         private IDisplay _display;
         private IPowerTube _powerTube;
         private ITimer _timer;
@@ -36,7 +38,7 @@ namespace Microwave.Test.Integration
             _timer = Substitute.For<ITimer>();
             _display = new Display(_output);
             _powerTube = new PowerTube(_output);
-            _cookControler = new CookController(_timer, _display, _powerTube, _stubbedUI);
+            _cookController = new CookController(_timer, _display, _powerTube);
 
             _door = new Door();
             _light = Substitute.For<ILight>();
@@ -44,13 +46,24 @@ namespace Microwave.Test.Integration
             _timeButton = new Button();
             _startCancelButton = new Button();
 
-            _sut = new UserInterface(_powerButton, _timebutton, _startCancelButton, _door, _display, _light, _cookControler);
-		}
+            _sut = new UserInterface(_powerButton, _timeButton, _startCancelButton, _door, _display, _light, _cookController);
+            _cookController.UI = _sut;
+        }
 
         [Test]
-        public void Test1()
+        public void PowerButtonPress_PressPowerButtonWhileReady_DisplayShowsDefaultPowerLevel()
         {
-            Assert.Pass();
+            _powerButton.Press();
+
+            _output.Received(1)
+                .OutputLine(Arg.Is<string>(str => 
+                    str.Contains("50")));
+        }
+
+        [Test]
+        public void OnPowerPressed_PressPowerButtonSetPowerLevelTooHigh_DisplayShows700Power()
+        {
+
         }
     }
 }
