@@ -51,26 +51,35 @@ namespace Microwave.Test.Integration
         }
 
         [Test]
-        public void StartCookingTwoSeconds_Stopping_EventsAreSend()
+        public void StartCookingTwoSeconds_WaitTwoSeconds_TimerRemainingIsZero()
         {
             _sut.StartCooking(20,2);
-
-            
+            Thread.Sleep(2100);
+            Assert.That(()=> _timer.TimeRemaining == 0);
         }
 
         [Test]
-        public void StartCooking_StopTurnedOnTimer_TimerIsTurnedOf()
+        public void StartCookingOneSeconds_WaitForStopping_EventsAreSend()
         {
-            _sut.StartCooking(1,1);
-            _sut.Stop();
-            
+            _sut.StartCooking(20,1);
+
+	        Thread.Sleep(1100); //Vent til timer slut 100 ms over
+
+            _powerTube.Received(1).TurnOff();
 
         }
 
         [Test]
-        public void StartCooking_StopNotTunredOnTimer_TimerIsTurnedOf()
+        public void StartCookingTwoSeconds_DisplayShowTimeTwice()
         {
+            _sut.StartCooking(20,2);
+            
+            Thread.Sleep(2100);
+
+            _display.Received(1).ShowTime(0,1);
+            _display.Received(1).ShowTime(0,0);
 
         }
+
     }
 }
