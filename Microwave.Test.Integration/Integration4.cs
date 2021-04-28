@@ -49,13 +49,50 @@ namespace Microwave.Test.Integration
         }
 
         [Test]
-        public void OnDoorOpened_stateReady_stateDoorOpen()
+        public void OnDoorOpened_stateReady()
         {
             door.Open();
             light.Received(1).TurnOn();
+        }
+
+        [Test]
+        public void OnDoorOpened_stateSetPower()
+        {
+            // Sets state to "SETPOWER"
+            userI.OnPowerPressed(this, EventArgs.Empty);
+
+            door.Open();
+            light.Received(1).TurnOn();
+            output.Received(1).OutputLine($"Display cleared");
+        }
+
+        [Test]
+        public void OnDoorOpened_stateSetTime()
+        {
+            // Sets state to "SETTIME"
+            userI.OnPowerPressed(this, EventArgs.Empty);
+            userI.OnTimePressed(this, EventArgs.Empty);
+
+            // Calls onDoorOpened
+            door.Open();
+            light.Received(1).TurnOn();
+            output.Received(1).OutputLine($"Display cleared");
+        }
+
+        [Test]
+        public void OnDoorOpened_stateCooking()
+        {
+            userI.OnPowerPressed(this, EventArgs.Empty);
+            userI.OnTimePressed(this, EventArgs.Empty);
+            output.Received(1).OutputLine($"Display shows: 01:00");
+            userI.OnStartCancelPressed(this, EventArgs.Empty);
+            
+            output.Received(1).OutputLine($"PowerTube works with 50");
 
 
-            Assert.Pass();
+            door.Open();
+            light.Received(1).TurnOn(); // Doesnt recieve 2 cause already on
+            output.Received(1).OutputLine($"Display cleared");
         }
 
     }
