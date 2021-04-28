@@ -75,15 +75,15 @@ namespace Microwave.Test.Integration
         }
 
         // Test Display
+        [Test]
         public void Display_ThreeSecondsRemaining_OutputWrite()
         {
             _sut.StartCooking(50, 115000);
             _stubbedTimer.TimeRemaining.Returns(115000);
             _stubbedTimer.TimerTick += Raise.EventWith(this, EventArgs.Empty);
             _output.Received(1).OutputLine($"Display shows: 01:55");
-
         }
-
+        [Test]
         public void Stop_StopTheCookingWhileOn_CookingIsStoped()
         {
             // Act
@@ -92,7 +92,7 @@ namespace Microwave.Test.Integration
             // Assert
             _output.Received(1).OutputLine("PowerTube turned off");
         }
-
+        [Test]
         public void Stop_StopTheCookingWhileOff_CookingIsStoped()
         {
             _sut.Stop();
@@ -100,8 +100,7 @@ namespace Microwave.Test.Integration
             _output.Received(0).OutputLine("PowerTube turned off");
         }
 
-
-        // Skal denne testes?? Dette er events
+        [Test]
         public void OnTimerExpired_eh_eh()
         {
 
