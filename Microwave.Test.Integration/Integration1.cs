@@ -79,7 +79,7 @@ namespace Microwave.Test.Integration
         public void Display_ThreeSecondsRemaining_OutputWrite()
         {
             _sut.StartCooking(50, 115000);
-            _stubbedTimer.TimeRemaining.Returns(115000);
+            _stubbedTimer.TimeRemaining.Returns(115);
             _stubbedTimer.TimerTick += Raise.EventWith(this, EventArgs.Empty);
             _output.Received(1).OutputLine($"Display shows: 01:55");
         }
