@@ -4,6 +4,7 @@ using Microwave.Classes.Boundary;
 using Microwave.Classes.Controllers;
 using Microwave.Classes.Interfaces;
 using NSubstitute;
+using NSubstitute.ReceivedExtensions;
 using NUnit.Framework;
 
 /*
@@ -25,8 +26,8 @@ namespace Microwave.Test.Integration
         private IOutput _output;
         private ILight _light;
         private IDoor _door;
-       
-        private CookController _cookController;    
+
+        private CookController _cookController;
         private IDisplay _display;
         private IPowerTube _powerTube;
         private ITimer _timer;
@@ -34,9 +35,9 @@ namespace Microwave.Test.Integration
         [SetUp]
         public void Setup()
         {
-	        _output = Substitute.For<IOutput>();
+            _output = Substitute.For<IOutput>();
             _timer = Substitute.For<ITimer>();
-            _display = new Display(_output);
+            _display = Substitute.For<IDisplay>();
             _powerTube = new PowerTube(_output);
             _cookController = new CookController(_timer, _display, _powerTube);
 
@@ -46,41 +47,63 @@ namespace Microwave.Test.Integration
             _timeButton = new Button();
             _startCancelButton = new Button();
 
-            _sut = new UserInterface(_powerButton, _timeButton, _startCancelButton, _door, _display, _light, _cookController);
+            _sut = new UserInterface(_powerButton, _timeButton, _startCancelButton, _door, _display, _light,
+                _cookController);
             _cookController.UI = _sut;
         }
 
         [Test]
-        public void PowerButtonPress_PressPowerButtonWhileReady_DisplayShowsDefaultPowerLevel()
+        public void PowerButtonPress_PressPowerButtonWhileReady_DisplayIsCalled()
         {
             _powerButton.Press();
 
-            _output.Received(1)
-                .OutputLine(Arg.Is<string>(str => 
-                    str.Contains("50")));
+            _display.Received(1).ShowPower(50);
         }
 
         [Test]
-        public void PowerButtonPress_PressPowerButton3Times_DisplayShows150Power()
+        public void PowerButtonPress_PressPowerButton3Times_DisplayCalledWithArgs()
         {
             _powerButton.Press();
             _powerButton.Press();
             _powerButton.Press();
 
-            _output.Received(1)
-                .OutputLine(Arg.Is<string>(str =>
-                    str.Contains("150")));
+            _display.Received(1).ShowPower(50);
+            _display.Received(1).ShowPower(100);
+            _display.Received(1).ShowPower(150);
         }
 
         [Test]
-        public void PowerButtonPress_PressPowerButtonTooManyTimes_DisplayShows700Power()
+        public void TimeButtonPress_PressWhileStateIsReady_NothingHappens()
         {
-            for(int i = 0; i < 20; i++)
-                _powerButton.Press();
+            _timeButton.Press();
 
-            _output.Received(1)
-                .OutputLine(Arg.Is<string>(str =>
-                    str.Contains("700")));
+            _display.Received(0);
         }
-    }
+
+        [Test]
+        public void TimeButtonPress_WhileStateSetPower_DisplayIsCalled()
+        {
+            _powerButton.Press();
+            _timeButton.Press();
+
+            _display.Received(1).ShowTime(1, 0);
+        }
+
+        [Test]
+        public void StartCancelButtonPress_StateIsReady_NothingHappens()
+        {
+            _startCancelButton.Press();
+
+            _display.Received(0);
+        }
+
+        [Test]
+        public void StartCancelButtonPress_StateIsSetPower_ValuesAreReset()
+        {
+            _powerButton.Press();
+            _startCancelButton.Press();
+
+            _display.Received(1).Clear();
+        }
+    }   
 }
