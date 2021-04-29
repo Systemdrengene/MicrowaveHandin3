@@ -66,5 +66,12 @@ namespace Microwave.Test.Integration
             _output.Received(1).OutputLine("Light is turned off");
         }
 
+        [Test]
+        public void OnPower_PowerIs100_PowerShows100()
+        {
+            _sut.OnPowerPressed(this,EventArgs.Empty);
+            _output.Received(1).OutputLine($"Display shows: 50 W");
+        }
+
     }
 }
