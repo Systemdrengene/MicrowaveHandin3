@@ -41,6 +41,8 @@ namespace Microwave.Test.Integration
         [Test]
         public void StartCooking_4SecondsInputWaitSecond_OneSecondLessRemaining()
         {
+
+
             _sut.StartCooking(20,4000);
             Thread.Sleep(1100);
             _sut.Stop();
@@ -60,10 +62,9 @@ namespace Microwave.Test.Integration
         {
             _sut.StartCooking(20,1000);
 
-	        Thread.Sleep(1100); //Vent til timer slut 100 ms over
+	        Thread.Sleep(1400); //Vent til timer slut 100 ms over
 
             _output.Received(1).OutputLine(Arg.Is<string>(str =>str.Contains("PowerTube turned off")));
-
         }
 
         [Test]
@@ -72,9 +73,9 @@ namespace Microwave.Test.Integration
             _sut.StartCooking(20,2000);
             
             Thread.Sleep(2100);
-
+            
+            //Test om Powertube slukkes efter tid gået, og UI clear display
             _output.Received(1).OutputLine(Arg.Is<string>(str => str.Contains("Display shows: 00:00")));
-
 
         }
 
