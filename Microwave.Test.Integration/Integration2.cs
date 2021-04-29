@@ -44,7 +44,7 @@ namespace Microwave.Test.Integration
 
 
             _sut.StartCooking(20,4000);
-            Thread.Sleep(1100);
+            Thread.Sleep(1300);
             _sut.Stop();
             Assert.That(_timer.TimeRemaining, Is.EqualTo(3000));
         }
@@ -53,7 +53,7 @@ namespace Microwave.Test.Integration
         public void StartCookingTwoSeconds_WaitTwoSeconds_TimerRemainingIsZero()
         {
             _sut.StartCooking(20,2000);
-            Thread.Sleep(2100);
+            Thread.Sleep(2300);
             Assert.That(()=> _timer.TimeRemaining == 0);
         }
 
@@ -72,7 +72,7 @@ namespace Microwave.Test.Integration
         {
             _sut.StartCooking(20,2000);
             
-            Thread.Sleep(2100);
+            Thread.Sleep(2300);
             
             //Test om Powertube slukkes efter tid gået, og UI clear display
             _output.Received(1).OutputLine(Arg.Is<string>(str => str.Contains("Display shows: 00:00")));
