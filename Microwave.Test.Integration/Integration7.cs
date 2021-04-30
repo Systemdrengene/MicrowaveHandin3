@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using Castle.Core.Internal;
 using Microwave.Classes.Boundary;
 using Microwave.Classes.Controllers;
 using Microwave.Classes.Interfaces;
@@ -48,9 +49,8 @@ namespace Microwave.Test.Integration
 
             CookCtrl.UI = userI;
 
-
+            // Takes input from output and writes it to a StringWriter which we can test through
             swr = new StringWriter();
-
             Console.SetOut(swr);
 
         }
@@ -69,6 +69,7 @@ namespace Microwave.Test.Integration
             pwrBtn.Press(); // 150 W
             timeBtn.Press(); // 01:00
             timeBtn.Press(); // 02:00
+            timeBtn.Press(); // 03:00
             startCnlBtn.Press(); 
             // Light goes on
             // Power tube turns on at desired power level
@@ -81,7 +82,6 @@ namespace Microwave.Test.Integration
             // User removes food
             door.Close();
             // Light goes off
-
             Assert.Pass();
         }
 
@@ -89,29 +89,84 @@ namespace Microwave.Test.Integration
         [Test]
         public void CookDish_Extension1MainUseCase()
         {
-
-            Assert.Pass();
+            door.Open();
+            // Light goes on
+            // User places dish and closes door
+            door.Close();
+            // Light turns off
+            pwrBtn.Press(); // 50 W
+            pwrBtn.Press(); // 100 W
+            pwrBtn.Press(); // 150 W
+            startCnlBtn.Press();
+            // Test that it clears display
+            Assert.That(swr.ToString().Contains($"Display cleared"));
+            // Test that values are reset
+            swr.GetStringBuilder().Clear();
+            pwrBtn.Press();
+            Assert.That(swr.ToString().Contains($"Display shows: 50 W"));
         }
 
         [Test]
         public void CookDish_Extension2MainUseCase()
         {
-
-            Assert.Pass();
+            door.Open();
+            // Light goes on
+            // User places dish and closes door
+            door.Close();
+            // Light turns off
+            pwrBtn.Press(); // 50 W
+            pwrBtn.Press(); // 100 W
+            swr.GetStringBuilder().Clear();
+            door.Open();
+            Assert.That(swr.ToString().Contains($"Display cleared"));
+            Assert.That(swr.ToString().Contains($"Light is turned on"));
         }
 
         [Test]
         public void CookDish_Extension3MainUseCase()
         {
-
-            Assert.Pass();
+            door.Open();
+            // Light goes on
+            // User places dish and closes door
+            door.Close();
+            // Light turns off
+            pwrBtn.Press(); // 50 W
+            pwrBtn.Press(); // 100 W
+            timeBtn.Press(); // 01:00
+            startCnlBtn.Press(); // State = Cooking
+            // Test that extension 3 is met when user presses startCancelButton during cooking
+            swr.GetStringBuilder().Clear();
+            startCnlBtn.Press();
+            Assert.That(swr.ToString().Contains($"PowerTube turned off"));
+            Assert.That(swr.ToString().Contains($"Display cleared"));
+            Assert.That(swr.ToString().Contains($"Light is turned off"));
+            // Test that values are reset
+            swr.GetStringBuilder().Clear();
+            pwrBtn.Press();
+            Assert.That(swr.ToString().Contains($"Display shows: 50 W"));
         }
 
         [Test]
         public void CookDish_Extension4MainUseCase()
         {
-
-            Assert.Pass();
+            door.Open();
+            // Light goes on
+            // User places dish and closes door
+            door.Close();
+            // Light turns off
+            pwrBtn.Press(); // 50 W
+            pwrBtn.Press(); // 100 W
+            timeBtn.Press(); // 01:00
+            startCnlBtn.Press(); // State = Cooking
+            // Test that extension 3 is met when user presses startCancelButton during cooking
+            swr.GetStringBuilder().Clear();
+            door.Open();
+            Assert.That(swr.ToString().Contains($"PowerTube turned off"));
+            Assert.That(swr.ToString().Contains($"Display cleared"));
+            // Test that values are reset
+            door.Close();
+            pwrBtn.Press();
+            Assert.That(swr.ToString().Contains($"Display shows: 50 W"));
         }
 
     }
