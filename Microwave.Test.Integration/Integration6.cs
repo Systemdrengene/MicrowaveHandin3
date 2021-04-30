@@ -14,7 +14,7 @@ using NUnit.Framework.Internal.Execution;
 
 namespace Microwave.Test.Integration
 {
-    public class Tests
+    public class Integration6
     {
         private IUserInterface _sut;
 
