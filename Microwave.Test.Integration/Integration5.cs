@@ -73,6 +73,15 @@ namespace Microwave.Test.Integration
         }
 
         [Test]
+        public void PowerButtonPress_PressPowerButtonManyTimes_PowerKeepsWithinThreshold()
+        {
+            for(int i = 0; i < 30; i++)
+                _powerButton.Press();
+
+            _display.Received(0).ShowPower(750);
+        }
+
+        [Test]
         public void TimeButtonPress_PressWhileStateIsReady_NothingHappens()
         {
             _timeButton.Press();
