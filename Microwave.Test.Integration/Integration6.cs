@@ -62,15 +62,35 @@ namespace Microwave.Test.Integration
         [Test]
         public void LightTurnOff_RecieveOnDoorClosedEvent_Light()
         {
-            _sut.OnDoorClosed(this, EventArgs.Empty);
+	        _sut.OnDoorOpened(this, EventArgs.Empty); // Open Door = myState er DOOROPEN
+            _sut.OnDoorClosed(this, EventArgs.Empty); 
             _output.Received(1).OutputLine("Light is turned off");
         }
 
         [Test]
-        public void OnPower_PowerIs100_PowerShows100()
+        public void OnPowerPressed_DefaultPower_DisplayShowsPower()
         {
             _sut.OnPowerPressed(this,EventArgs.Empty);
             _output.Received(1).OutputLine($"Display shows: 50 W");
+        }
+
+        [Test]
+        public void OnTimePressed_DisplayShowsTime()
+        {
+	        _sut.OnPowerPressed(this, EventArgs.Empty); // State.SetPower
+	        _sut.OnTimePressed(this, EventArgs.Empty); // State.SetTime (Default time 1 min)
+	        _sut.OnTimePressed(this, EventArgs.Empty); // Show time with 1 min added (2 min total)
+
+            _output.Received(1).OutputLine($"Display shows: 02:00");
+
+        }
+
+        [Test]
+        public void OnStartCancelPressed_DisplayClear()
+        {
+	        _sut.OnPowerPressed(this, EventArgs.Empty); // State.SetPower
+            _sut.OnStartCancelPressed(this, EventArgs.Empty);
+            _output.Received(1).OutputLine($"Display cleared");
         }
 
     }
