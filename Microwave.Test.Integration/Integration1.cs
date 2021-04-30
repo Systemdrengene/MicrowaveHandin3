@@ -101,5 +101,12 @@ namespace Microwave.Test.Integration
 
             output.Received(0).OutputLine("PowerTube turned off");
         }
+
+        [Test]
+        public void StartStart_StartWhileTurnOn_ThrowsException()
+        {
+            sut.StartCooking(50,50);
+            Assert.Throws<ApplicationException>(() => sut.StartCooking(50, 50));
+        }
     }
 }
