@@ -55,7 +55,7 @@ namespace Microwave.Test.Integration
         [Test]
         public void LightTurnOn_RecieveOnDoorOpenEvent_LightTurnsOn()
         {
-            _sut.OnDoorOpened(this,EventArgs.Empty);
+            _sut.OnDoorOpened(this,EventArgs.Empty); 
             _output.Received(1).OutputLine("Light is turned on");
         }
 
