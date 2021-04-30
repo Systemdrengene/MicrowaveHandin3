@@ -99,11 +99,5 @@ namespace Microwave.Test.Integration
 
             _output.Received(0).OutputLine("PowerTube turned off");
         }
-
-        [Test]
-        public void OnTimerExpired_eh_eh()
-        {
-
-        }
     }
 }
