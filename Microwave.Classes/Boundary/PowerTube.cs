@@ -17,7 +17,7 @@ namespace Microwave.Classes.Boundary
         public void TurnOn(int power)
         {
             //Fixed changes interval of watt, fixed to correct from use case
-            if (power <= 50 || 700 <= power)  // Was 1 to 100 before
+            if (power < 50 || 700 < power)  // Was 1 to 100 before
             {
                 throw new ArgumentOutOfRangeException("power", power, "Must be between 50 and 700 (incl.)");  // 1 and 100 before
             }
