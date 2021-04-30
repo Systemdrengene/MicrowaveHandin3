@@ -43,7 +43,7 @@ namespace Microwave.Test.Integration
         {
 
 
-            _sut.StartCooking(20,4);
+            _sut.StartCooking(50,4);
             Thread.Sleep(1300);
             _sut.Stop();
             Assert.That(_timer.TimeRemaining, Is.EqualTo(3));
@@ -52,7 +52,7 @@ namespace Microwave.Test.Integration
         [Test]
         public void StartCookingTwoSeconds_WaitTwoSeconds_TimerRemainingIsZero()
         {
-            _sut.StartCooking(20,2);
+            _sut.StartCooking(50,2);
             Thread.Sleep(2300);
             Assert.That(()=> _timer.TimeRemaining == 0);
         }
@@ -60,7 +60,7 @@ namespace Microwave.Test.Integration
         [Test]
         public void StartCookingOneSeconds_WaitForStopping_EventsAreSend()
         {
-            _sut.StartCooking(20,1);
+            _sut.StartCooking(50,1);
 
 	        Thread.Sleep(1400); //Vent til timer slut 100 ms over
 
@@ -70,7 +70,7 @@ namespace Microwave.Test.Integration
         [Test]
         public void StartCookingTwoSeconds_DisplayShowTime()
         {
-            _sut.StartCooking(20,2);
+            _sut.StartCooking(50,2);
             
             Thread.Sleep(2300);
             
