@@ -39,12 +39,12 @@ namespace Microwave.Test.Integration
             _sut = new CookController(_stubbedTimer, _display, _powerTube, _stubbedUI);
         }
 
-        // Power skal være 1 - 100
-        [TestCase(1, 1)]
-        [TestCase(2, 1)]
+        // Power skal være 50 - 700
         [TestCase(50, 1)]
-        [TestCase(99, 1)]
-        [TestCase(100, 1)]
+        [TestCase(51, 1)]
+        [TestCase(400, 1)]
+        [TestCase(699, 1)]
+        [TestCase(700, 1)]
         public void StartCooking_SetPowerAndTime_PowerTubeIsOn(int power, int time)
         {
             // Arrange
@@ -61,8 +61,8 @@ namespace Microwave.Test.Integration
 
         // Power out of range (Exception)
         [TestCase(1000, 1)]
-        [TestCase(101, 1)]
-        [TestCase(0, 1)]
+        [TestCase(701, 1)]
+        [TestCase(49, 1)]
         [TestCase(-5, 1)]
         public void StartCooking_SetPowerAndTime_PowerExceptionOOR(int power, int time)
         {
