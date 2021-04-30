@@ -84,7 +84,7 @@ namespace Microwave.Test.Integration
             _output.Received(1).OutputLine($"Display shows: 01:55");
         }
         [Test]
-        public void Stop_StopTheCookingWhileOn_CookingIsStoped()
+        public void Stop_StopTheCookingWhileOn_CookingIsStopped()
         {
             // Act
             _sut.StartCooking(50, 50);
@@ -93,7 +93,7 @@ namespace Microwave.Test.Integration
             _output.Received(1).OutputLine("PowerTube turned off");
         }
         [Test]
-        public void Stop_StopTheCookingWhileOff_CookingIsStoped()
+        public void Stop_StopTheCookingWhileOff_CookingIsStopped()
         {
             _sut.Stop();
 
