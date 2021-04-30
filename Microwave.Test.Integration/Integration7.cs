@@ -1,11 +1,13 @@
 using System;
 using System.IO;
+using System.Threading;
 using Castle.Core.Internal;
 using Microwave.Classes.Boundary;
 using Microwave.Classes.Controllers;
 using Microwave.Classes.Interfaces;
 using NSubstitute;
 using NUnit.Framework;
+using Timer = Microwave.Classes.Boundary.Timer;
 
 /*
     T: UI
@@ -69,8 +71,8 @@ namespace Microwave.Test.Integration
             pwrBtn.Press(); // 150 W
             timeBtn.Press(); // 01:00
             timeBtn.Press(); // 02:00
-            timeBtn.Press(); // 03:00
             startCnlBtn.Press(); 
+            Thread.Sleep(121000); // wait 2 min
             // Light goes on
             // Power tube turns on at desired power level
             // Displays shows and updates the remaining time
