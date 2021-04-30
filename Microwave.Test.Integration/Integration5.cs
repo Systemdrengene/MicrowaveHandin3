@@ -17,102 +17,102 @@ namespace Microwave.Test.Integration
 {
     public class Integration5
     {
-        private IUserInterface _sut;
+        private IUserInterface sut;
 
-        private IButton _powerButton;
-        private IButton _timeButton;
-        private IButton _startCancelButton;
+        private IButton powerButton;
+        private IButton timeButton;
+        private IButton startCancelButton;
 
-        private IOutput _output;
-        private ILight _light;
-        private IDoor _door;
+        private IOutput output;
+        private ILight light;
+        private IDoor door;
 
-        private CookController _cookController;
-        private IDisplay _display;
-        private IPowerTube _powerTube;
-        private ITimer _timer;
+        private CookController cookController;
+        private IDisplay display;
+        private IPowerTube powerTube;
+        private ITimer timer;
 
         [SetUp]
         public void Setup()
         {
-            _output = Substitute.For<IOutput>();
-            _timer = Substitute.For<ITimer>();
-            _display = Substitute.For<IDisplay>();
-            _powerTube = new PowerTube(_output);
-            _cookController = new CookController(_timer, _display, _powerTube);
+            output = Substitute.For<IOutput>();
+            timer = Substitute.For<ITimer>();
+            display = Substitute.For<IDisplay>();
+            powerTube = new PowerTube(output);
+            cookController = new CookController(timer, display, powerTube);
 
-            _door = new Door();
-            _light = Substitute.For<ILight>();
-            _powerButton = new Button();
-            _timeButton = new Button();
-            _startCancelButton = new Button();
+            door = new Door();
+            light = Substitute.For<ILight>();
+            powerButton = new Button();
+            timeButton = new Button();
+            startCancelButton = new Button();
 
-            _sut = new UserInterface(_powerButton, _timeButton, _startCancelButton, _door, _display, _light,
-                _cookController);
-            _cookController.UI = _sut;
+            sut = new UserInterface(powerButton, timeButton, startCancelButton, door, display, light,
+                cookController);
+            cookController.UI = sut;
         }
 
         [Test]
         public void PowerButtonPress_PressPowerButtonWhileReady_DisplayIsCalled()
         {
-            _powerButton.Press();
+            powerButton.Press();
 
-            _display.Received(1).ShowPower(50);
+            display.Received(1).ShowPower(50);
         }
 
         [Test]
         public void PowerButtonPress_PressPowerButton3Times_DisplayCalledWithArgs()
         {
-            _powerButton.Press();
-            _powerButton.Press();
-            _powerButton.Press();
+            powerButton.Press();
+            powerButton.Press();
+            powerButton.Press();
 
-            _display.Received(1).ShowPower(50);
-            _display.Received(1).ShowPower(100);
-            _display.Received(1).ShowPower(150);
+            display.Received(1).ShowPower(50);
+            display.Received(1).ShowPower(100);
+            display.Received(1).ShowPower(150);
         }
 
         [Test]
         public void PowerButtonPress_PressPowerButtonManyTimes_PowerKeepsWithinThreshold()
         {
             for(int i = 0; i < 30; i++)
-                _powerButton.Press();
+                powerButton.Press();
 
-            _display.Received(0).ShowPower(750);
+            display.Received(0).ShowPower(750);
         }
 
         [Test]
         public void TimeButtonPress_PressWhileStateIsReady_NothingHappens()
         {
-            _timeButton.Press();
+            timeButton.Press();
 
-            _display.Received(0);
+            display.Received(0);
         }
 
         [Test]
         public void TimeButtonPress_WhileStateSetPower_DisplayIsCalled()
         {
-            _powerButton.Press();
-            _timeButton.Press();
+            powerButton.Press();
+            timeButton.Press();
 
-            _display.Received(1).ShowTime(1, 0);
+            display.Received(1).ShowTime(1, 0);
         }
 
         [Test]
         public void StartCancelButtonPress_StateIsReady_NothingHappens()
         {
-            _startCancelButton.Press();
+            startCancelButton.Press();
 
-            _display.Received(0);
+            display.Received(0);
         }
 
         [Test]
         public void StartCancelButtonPress_StateIsSetPower_ValuesAreReset()
         {
-            _powerButton.Press();
-            _startCancelButton.Press();
+            powerButton.Press();
+            startCancelButton.Press();
 
-            _display.Received(1).Clear();
+            display.Received(1).Clear();
         }
     }   
 }

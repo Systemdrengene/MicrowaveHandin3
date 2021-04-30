@@ -16,81 +16,81 @@ namespace Microwave.Test.Integration
 {
     public class Integration6
     {
-        private IUserInterface _sut;
+        private IUserInterface sut;
 
-        private IButton _powerButton;
-        private IButton _timeButton;
-        private IButton _startCancelButton;
+        private IButton powerButton;
+        private IButton timeButton;
+        private IButton startCancelButton;
 
-        private IOutput _output;
-        private ILight _light;
-        private IDoor _door;
+        private IOutput output;
+        private ILight light;
+        private IDoor door;
 
-        private CookController _cookController;
-        private IDisplay _display;
-        private IPowerTube _powerTube;
-        private ITimer _timer;
+        private CookController cookController;
+        private IDisplay display;
+        private IPowerTube powerTube;
+        private ITimer timer;
 
         [SetUp]
         public void Setup()
         {
-	        _output = Substitute.For<IOutput>();
-	        _timer = Substitute.For<ITimer>();
+	        output = Substitute.For<IOutput>();
+	        timer = Substitute.For<ITimer>();
 
-	        _display = new Display(_output);
-	        _powerTube = new PowerTube(_output);
-            _cookController = new CookController(_timer, _display, _powerTube);
+	        display = new Display(output);
+	        powerTube = new PowerTube(output);
+            cookController = new CookController(timer, display, powerTube);
 
-            _door = new Door();
-            _light = new Light(_output);
-            _powerButton = new Button();
-            _timeButton = new Button();
-            _startCancelButton = new Button();
+            door = new Door();
+            light = new Light(output);
+            powerButton = new Button();
+            timeButton = new Button();
+            startCancelButton = new Button();
 
-            _sut = new UserInterface(_powerButton, _timeButton, 
-	            _startCancelButton, _door, _display, _light, _cookController);
-            _cookController.UI = _sut;
+            sut = new UserInterface(powerButton, timeButton, 
+	            startCancelButton, door, display, light, cookController);
+            cookController.UI = sut;
         }
 
         [Test]
-        public void LightTurnOn_RecieveOnDoorOpenEvent_LightTurnsOn()
+        public void LightTurnOn_ReceiveOnDoorOpenEvent_LightTurnsOn()
         {
-            _sut.OnDoorOpened(this,EventArgs.Empty); 
-            _output.Received(1).OutputLine("Light is turned on");
+            sut.OnDoorOpened(this,EventArgs.Empty); 
+            output.Received(1).OutputLine("Light is turned on");
         }
 
         [Test]
-        public void LightTurnOff_RecieveOnDoorClosedEvent_Light()
+        public void LightTurnOff_ReceiveOnDoorClosedEvent_Light()
         {
-	        _sut.OnDoorOpened(this, EventArgs.Empty); // Open Door = myState er DOOROPEN
-            _sut.OnDoorClosed(this, EventArgs.Empty); 
-            _output.Received(1).OutputLine("Light is turned off");
+	        sut.OnDoorOpened(this, EventArgs.Empty); // Open Door = myState er DOOROPEN
+            sut.OnDoorClosed(this, EventArgs.Empty); 
+            output.Received(1).OutputLine("Light is turned off");
         }
 
         [Test]
         public void OnPowerPressed_DefaultPower_DisplayShowsPower()
         {
-            _sut.OnPowerPressed(this,EventArgs.Empty);
-            _output.Received(1).OutputLine($"Display shows: 50 W");
+            sut.OnPowerPressed(this,EventArgs.Empty);
+            output.Received(1).OutputLine($"Display shows: 50 W");
         }
 
         [Test]
         public void OnTimePressed_DisplayShowsTime()
         {
-	        _sut.OnPowerPressed(this, EventArgs.Empty); // State.SetPower
-	        _sut.OnTimePressed(this, EventArgs.Empty); // State.SetTime (Default time 1 min)
-	        _sut.OnTimePressed(this, EventArgs.Empty); // Show time with 1 min added (2 min total)
+	        sut.OnPowerPressed(this, EventArgs.Empty); // State.SetPower
+	        sut.OnTimePressed(this, EventArgs.Empty); // State.SetTime (Default time 1 min)
+	        sut.OnTimePressed(this, EventArgs.Empty); // Show time with 1 min added (2 min total)
 
-            _output.Received(1).OutputLine($"Display shows: 02:00");
+            output.Received(1).OutputLine($"Display shows: 02:00");
 
         }
 
         [Test]
         public void OnStartCancelPressed_DisplayClear()
         {
-	        _sut.OnPowerPressed(this, EventArgs.Empty); // State.SetPower
-            _sut.OnStartCancelPressed(this, EventArgs.Empty);
-            _output.Received(1).OutputLine($"Display cleared");
+	        sut.OnPowerPressed(this, EventArgs.Empty); // State.SetPower
+            sut.OnStartCancelPressed(this, EventArgs.Empty);
+            output.Received(1).OutputLine($"Display cleared");
         }
 
     }

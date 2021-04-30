@@ -15,80 +15,80 @@ namespace Microwave.Test.Integration
 {
     public class Integration3
     {
-        private IOutput _output;
-        private ITimer _timer;
+        private IOutput output;
+        private ITimer timer;
 
-        private IButton _powerbutton;
-        private IButton _timebutton;
-        private IButton _startcancelbutton;
-		private IDoor _door;
-		private IDisplay _display;
-		private ILight _light;
-		private ICookController _cooker;
-        private IPowerTube _powertube;
+        private IButton powerButton;
+        private IButton timeButton;
+        private IButton startCancelButton;
+		private IDoor door;
+		private IDisplay display;
+		private ILight light;
+		private ICookController cookerCtrl;
+        private IPowerTube powerTube;
 
-        private UserInterface _sut;
+        private UserInterface sut;
 
 		[SetUp]
         public void Setup()
 		{
-            _output = Substitute.For<IOutput>();
-            _timer = Substitute.For<ITimer>();
-            _door = Substitute.For<IDoor>();
-            _light = Substitute.For<ILight>();
+            output = Substitute.For<IOutput>();
+            timer = Substitute.For<ITimer>();
+            door = Substitute.For<IDoor>();
+            light = Substitute.For<ILight>();
 
-            _powerbutton = Substitute.For<Button>();
-			_timebutton = Substitute.For<Button>();
-            _startcancelbutton = Substitute.For<Button>();
-            _display = new Display(_output);
-            _powertube = new PowerTube(_output);
-            _cooker = new CookController(_timer, _display, _powertube);
+            powerButton = Substitute.For<Button>();
+			timeButton = Substitute.For<Button>();
+            startCancelButton = Substitute.For<Button>();
+            display = new Display(output);
+            powerTube = new PowerTube(output);
+            cookerCtrl = new CookController(timer, display, powerTube);
 
-            _sut = new UserInterface
+            sut = new UserInterface
                 (
-                    _powerbutton,
-                    _timebutton,
-                    _startcancelbutton,
-                    _door,
-                    _display,
-                    _light,
-                    _cooker
+                    powerButton,
+                    timeButton,
+                    startCancelButton,
+                    door,
+                    display,
+                    light,
+                    cookerCtrl
                 );
         }
 
         [Test]
         public void OnStartCancelPressed_StatesIsSETTIME_PowerSetTo50TimerSetTo60()
         {
-            _sut.OnPowerPressed(this, EventArgs.Empty);
-            _sut.OnTimePressed(this, EventArgs.Empty);
-            _sut.OnStartCancelPressed(this, EventArgs.Empty);
+            sut.OnPowerPressed(this, EventArgs.Empty);
+            sut.OnTimePressed(this, EventArgs.Empty);
+            sut.OnStartCancelPressed(this, EventArgs.Empty);
 
-            _output.Received(1).OutputLine($"PowerTube works with 50");
-            _timer.Received(1).Start(60);
+            output.Received(1).OutputLine($"PowerTube works with 50");
+            timer.Received(1).Start(60);
         }
 
         [Test]
-        public void OnStartCancelPressed_StatesIsCOOKING_PowertubeAndTimerStopped()
+        public void OnStartCancelPressed_StatesIsCOOKING_PowerTubeAndTimerStopped()
         {
-            _sut.OnPowerPressed(this, EventArgs.Empty);
-            _sut.OnTimePressed(this, EventArgs.Empty);
-            _sut.OnStartCancelPressed(this, EventArgs.Empty);
-            _sut.OnStartCancelPressed(this, EventArgs.Empty);
+            sut.OnPowerPressed(this, EventArgs.Empty);
+            sut.OnTimePressed(this, EventArgs.Empty);
+            sut.OnStartCancelPressed(this, EventArgs.Empty);
+            sut.OnStartCancelPressed(this, EventArgs.Empty);
 
-            _output.Received(1).OutputLine($"PowerTube turned off");
-            _timer.Received(1).Stop();
+            output.Received(1).OutputLine($"PowerTube turned off");
+            timer.Received(1).Stop();
         }
 
         [Test]
-        public void OnDoorOpened_StatesIsCOOKING_PowertubeAndTimerStopped()
+        public void OnDoorOpened_StatesIsCOOKING_PowerTubeAndTimerStopped()
         {
-            _sut.OnPowerPressed(this, EventArgs.Empty);
-            _sut.OnTimePressed(this, EventArgs.Empty);
-            _sut.OnStartCancelPressed(this, EventArgs.Empty);
-            _sut.OnDoorOpened(this, EventArgs.Empty);
+            sut.OnPowerPressed(this, EventArgs.Empty);
+            sut.OnTimePressed(this, EventArgs.Empty);
+            sut.OnStartCancelPressed(this, EventArgs.Empty);
+            sut.OnDoorOpened(this, EventArgs.Empty);
 
-            _output.Received(1).OutputLine($"PowerTube turned off");
-            _timer.Received(1).Stop();
+            output.Received(1).OutputLine($"PowerTube turned off");
+            timer.Received(1).Stop();
         }
     }
 }

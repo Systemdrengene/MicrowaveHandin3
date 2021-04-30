@@ -17,26 +17,26 @@ namespace Microwave.Test.Integration
 {
     public class Integration1
     {
-        private IOutput _output;
+        private IOutput output;
 
-        private IDisplay _display;
-        private IPowerTube _powerTube;
-        private ITimer _stubbedTimer;
-        private IUserInterface _stubbedUI;
+        private IDisplay display;
+        private IPowerTube powerTube;
+        private ITimer stubbedTimer;
+        private IUserInterface stubbedUI;
 
-        private CookController _sut;
+        private CookController sut;
 
         [SetUp]
         public void Setup()
         {
-            _output = Substitute.For<IOutput>();
-            _stubbedUI = Substitute.For<IUserInterface>();
-            _stubbedTimer = Substitute.For<ITimer>();
+            output = Substitute.For<IOutput>();
+            stubbedUI = Substitute.For<IUserInterface>();
+            stubbedTimer = Substitute.For<ITimer>();
 
-            _display = new Display(_output);
-            _powerTube = new PowerTube(_output);
+            display = new Display(output);
+            powerTube = new PowerTube(output);
 
-            _sut = new CookController(_stubbedTimer, _display, _powerTube, _stubbedUI);
+            sut = new CookController(stubbedTimer, display, powerTube, stubbedUI);
         }
 
         // Power skal være 50 - 700
@@ -50,11 +50,11 @@ namespace Microwave.Test.Integration
             // Arrange
 
             // Act
-            _sut.StartCooking(power, time);
+            sut.StartCooking(power, time);
             // Assert 
             //output.Received(1).OutputLine($"PowerTube works with {power} %");
 
-            _output.Received(1).OutputLine(Arg.Is<string>(str => 
+            output.Received(1).OutputLine(Arg.Is<string>(str => 
                 str.Contains(power.ToString())
             ));
         }
@@ -71,33 +71,35 @@ namespace Microwave.Test.Integration
             // Act
             
             // Assert 
-            Assert.Throws<ArgumentOutOfRangeException>(() => _sut.StartCooking(power, time));
+            Assert.Throws<ArgumentOutOfRangeException>(() => sut.StartCooking(power, time));
         }
 
         // Test Display
         [Test]
         public void Display_ThreeSecondsRemaining_OutputWrite()
         {
-            _sut.StartCooking(50, 115);
-            _stubbedTimer.TimeRemaining.Returns(115);
-            _stubbedTimer.TimerTick += Raise.EventWith(this, EventArgs.Empty);
-            _output.Received(1).OutputLine($"Display shows: 01:55");
+            sut.StartCooking(50, 115);
+            stubbedTimer.TimeRemaining.Returns(115);
+            stubbedTimer.TimerTick += Raise.EventWith(this, EventArgs.Empty);
+            output.Received(1).OutputLine($"Display shows: 01:55");
         }
+
         [Test]
         public void Stop_StopTheCookingWhileOn_CookingIsStopped()
         {
             // Act
-            _sut.StartCooking(50, 50);
-            _sut.Stop();
+            sut.StartCooking(50, 50);
+            sut.Stop();
             // Assert
-            _output.Received(1).OutputLine("PowerTube turned off");
+            output.Received(1).OutputLine("PowerTube turned off");
         }
+
         [Test]
         public void Stop_StopTheCookingWhileOff_CookingIsStopped()
         {
-            _sut.Stop();
+            sut.Stop();
 
-            _output.Received(0).OutputLine("PowerTube turned off");
+            output.Received(0).OutputLine("PowerTube turned off");
         }
     }
 }
