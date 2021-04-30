@@ -19,13 +19,13 @@ namespace Microwave.Test.Integration
     {
         private UserInterface userI; 
 
-        private CookController CookCtrl;
+        private CookController cookCtrl;
         private IDisplay display;
         private IDoor door;
-        private IPowerTube PT;
+        private IPowerTube powerTube;
         private IOutput output;
 
-        private IButton pwrBtn, timBtn, strtCnlBtn;
+        private IButton pwrBtn, timeBtn, startCancelBtn;
         private ILight light;
         private ITimer timer;
 
@@ -34,20 +34,20 @@ namespace Microwave.Test.Integration
         {
             // Stubs
             pwrBtn = Substitute.For<IButton>();
-            timBtn = Substitute.For<IButton>();
-            strtCnlBtn = Substitute.For<IButton>();
+            timeBtn = Substitute.For<IButton>();
+            startCancelBtn = Substitute.For<IButton>();
             light = Substitute.For<ILight>();
             timer = Substitute.For<ITimer>();
             // Integrated
             door = new Door();
             output = Substitute.For<IOutput>();
             display = new Display(output);
-            PT = new PowerTube(output);
-            CookCtrl = new CookController(timer, display, PT);
+            powerTube = new PowerTube(output);
+            cookCtrl = new CookController(timer, display, powerTube);
             // Test
-            userI = new UserInterface(pwrBtn, timBtn, strtCnlBtn, door, display, light, CookCtrl);
+            userI = new UserInterface(pwrBtn, timeBtn, startCancelBtn, door, display, light, cookCtrl);
             
-            CookCtrl.UI = userI;
+            cookCtrl.UI = userI;
         }
 
         [Test]
