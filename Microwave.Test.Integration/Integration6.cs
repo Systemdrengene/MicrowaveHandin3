@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using Microwave.Classes.Boundary;
 using Microwave.Classes.Controllers;
 using Microwave.Classes.Interfaces;
@@ -55,31 +56,39 @@ namespace Microwave.Test.Integration
         [Test]
         public void LightTurnOn_ReceiveOnDoorOpenEvent_LightTurnsOn()
         {
-            sut.OnDoorOpened(this,EventArgs.Empty); 
+            // sut.OnDoorOpened(this,EventArgs.Empty); 
+            door.Open();
             output.Received(1).OutputLine("Light is turned on");
         }
 
         [Test]
         public void LightTurnOff_ReceiveOnDoorClosedEvent_Light()
         {
-	        sut.OnDoorOpened(this, EventArgs.Empty); // Open Door = myState er DOOROPEN
-            sut.OnDoorClosed(this, EventArgs.Empty); 
+	        //sut.OnDoorOpened(this, EventArgs.Empty); // Open Door = myState er DOOROPEN
+            //sut.OnDoorClosed(this, EventArgs.Empty); 
+            door.Open();
+            door.Close();
+
             output.Received(1).OutputLine("Light is turned off");
         }
 
         [Test]
         public void OnPowerPressed_DefaultPower_DisplayShowsPower()
         {
-            sut.OnPowerPressed(this,EventArgs.Empty);
+            //sut.OnPowerPressed(this,EventArgs.Empty);
+            powerButton.Press();
             output.Received(1).OutputLine($"Display shows: 50 W");
         }
 
         [Test]
         public void OnTimePressed_DisplayShowsTime()
         {
-	        sut.OnPowerPressed(this, EventArgs.Empty); // State.SetPower
-	        sut.OnTimePressed(this, EventArgs.Empty); // State.SetTime (Default time 1 min)
-	        sut.OnTimePressed(this, EventArgs.Empty); // Show time with 1 min added (2 min total)
+	        //sut.OnPowerPressed(this, EventArgs.Empty); // State.SetPower
+            powerButton.Press();
+	        //sut.OnTimePressed(this, EventArgs.Empty); // State.SetTime (Default time 1 min)
+	        timeButton.Press();
+            //sut.OnTimePressed(this, EventArgs.Empty); // Show time with 1 min added (2 min total)
+            timeButton.Press();
 
             output.Received(1).OutputLine($"Display shows: 02:00");
 
@@ -88,8 +97,10 @@ namespace Microwave.Test.Integration
         [Test]
         public void OnStartCancelPressed_DisplayClear()
         {
-	        sut.OnPowerPressed(this, EventArgs.Empty); // State.SetPower
-            sut.OnStartCancelPressed(this, EventArgs.Empty);
+	        //sut.OnPowerPressed(this, EventArgs.Empty); // State.SetPower
+            powerButton.Press();
+            //sut.OnStartCancelPressed(this, EventArgs.Empty);
+            startCancelButton.Press();
             output.Received(1).OutputLine($"Display cleared");
         }
 

@@ -59,7 +59,7 @@ namespace Microwave.Test.Integration
 
 
         [Test]
-        public void CookDish_HappyScenarioMainUseCase()
+        public void CookDish_HappyScenarioMainUseCase_()
         {
             door.Open();
             // Light goes on
@@ -71,8 +71,9 @@ namespace Microwave.Test.Integration
             pwrBtn.Press(); // 150 W
             timeBtn.Press(); // 01:00
             timeBtn.Press(); // 02:00
-            startCnlBtn.Press(); 
-            Thread.Sleep(121000); // wait 2 min
+            startCnlBtn.Press();
+            int _2min = 121000;
+            Thread.Sleep(_2min); // wait 2 min
             // Light goes on
             // Power tube turns on at desired power level
             // Displays shows and updates the remaining time
@@ -84,7 +85,8 @@ namespace Microwave.Test.Integration
             // User removes food
             door.Close();
             // Light goes off
-            Assert.Pass();
+            Assert.That(swr.ToString().Contains($"Display cleared"));
+            //Assert.Pass();
         }
 
 
